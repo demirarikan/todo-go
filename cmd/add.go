@@ -4,7 +4,10 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	//"fmt"
+
 	"fmt"
+	"log"
 
 	"github.com/demirarikan/todo-go/todo"
 	"github.com/spf13/cobra"
@@ -16,11 +19,18 @@ var addCmd = &cobra.Command{
 	Short: "Add a new todo",
 	Long:  `Add will create and add a new todo item to the list`,
 	Run: func(cmd *cobra.Command, args []string) {
-		items := []todo.Item{}
+		items, err := todo.ReadItems(datafile)
+		if err != nil {
+			log.Printf("%v", err)
+		}
 		for _, x := range args {
 			items = append(items, todo.Item{Text: x})
 		}
-		fmt.Println(items)
+
+		err = todo.SaveItems(datafile, items)
+		if err != nil {
+			fmt.Errorf("%v", err)
+		}
 	},
 }
 
